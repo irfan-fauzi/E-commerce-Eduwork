@@ -19,7 +19,7 @@ Hasilnya: Anda memiliki salinan repo tersebut di akun GitHub Anda.
 Clone repository fork ke komputer lokal:
 
 ```bash
-git clone https://github.com/iqbaldarusallam/E-commerce-Eduwork.git
+git clone https://github.com/Nama Repository Fork Anda/E-commerce-Eduwork.git
 cd E-commerce-Eduwork
 ```
 
