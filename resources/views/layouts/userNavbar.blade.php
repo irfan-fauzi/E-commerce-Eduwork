@@ -36,7 +36,7 @@
                                     <a href="{{ route('user.cart.index') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('user.cart.*') ? 'border-blue-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} text-sm font-medium leading-5 transition duration-150 ease-in-out">
                                         {{ __('Cart') }} <span class="ml-1 bg-red-500 text-white text-xs px-2 py-1 rounded-full" id="cart-badge">{{ auth()->user()->cartItems()->count() }}</span>
                                     </a>
-                                    <a href="" class="inline-flex items-center px-1 pt-1 border-b-2">Home</a>
+                                    <a href="{{ route('user.home') }}" class="inline-flex items-center px-1 pt-1 border-b-2">Home</a>
                                 @endauth
                             </div>
                         </div>

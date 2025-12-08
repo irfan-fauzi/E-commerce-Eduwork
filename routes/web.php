@@ -39,7 +39,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/dashboard', [\App\Http\Controllers\User\DashboardController::class, 'index'])->name('dashboard');
 
         //Home route
-        Route::get('/home', [HomeController::class, 'index']);
+        Route::get('/home', [HomeController::class, 'index'])->name('home');
 
         // Products routes
         Route::get('/products', [ProductController::class, 'index'])->name('products.index');
