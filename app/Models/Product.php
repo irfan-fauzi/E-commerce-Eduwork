@@ -19,12 +19,15 @@ class Product extends Model
         'price',
         'stock',
         'active',
+        // weight in grams for shipping calculation
+        'weight',
     ];
 
     protected $casts = [
         'price' => 'integer',
         'stock' => 'integer',
         'active' => 'boolean',
+        'weight' => 'integer',
     ];
 
     public function category()

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('status')->default('pending');
             $table->integer('total_amount')->default(0);
             $table->integer('shipping_fee')->default(0);
+            $table->text('message')->nullable();
             $table->string('payment_method')->nullable();
             $table->string('payment_gateway_id')->nullable();
             $table->timestamps();

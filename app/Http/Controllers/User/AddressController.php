@@ -24,6 +24,8 @@ class AddressController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'recipient_name' => 'nullable|string|max:150',
+            'phone' => 'nullable|string|max:30',
             'label' => 'nullable|string|max:100',
             'address_text' => 'required|string|max:500',
             'city' => 'nullable|string|max:100',
@@ -58,6 +60,8 @@ class AddressController extends Controller
         }
 
         $validated = $request->validate([
+              'recipient_name' => 'nullable|string|max:150',
+                        'phone' => 'nullable|string|max:30',
             'label' => 'nullable|string|max:100',
             'address_text' => 'required|string|max:500',
             'city' => 'nullable|string|max:100',

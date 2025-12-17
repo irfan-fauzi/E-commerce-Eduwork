@@ -62,7 +62,7 @@
                     x-show="show"
                     x-transition
                     x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600"
+                    class="text-base text-gray-700 w-full"
                 >{{ __('Saved.') }}</p>
             @endif
         </div>

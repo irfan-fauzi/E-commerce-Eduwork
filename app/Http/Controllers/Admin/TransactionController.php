@@ -66,6 +66,9 @@ class TransactionController extends Controller
     {
         // Don't delete transactions, just cancel them
         $transaction->update(['status' => 'cancelled']);
+        foreach ($transaction->payments()->where('status', 'pending')->get() as $payment) {
+            $payment->update(['status' => \App\Models\Payment::STATUS_CANCELLED, 'failure_reason' => 'Cancelled by admin']);
+        }
         return redirect()->route('admin.transactions.index')
             ->with('success', 'Transaction cancelled.');
     }

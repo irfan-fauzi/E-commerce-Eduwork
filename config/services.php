@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    'rajaongkir' => [
+        'key' => env('RAJAONGKIR_API_KEY'),
+        // origin city id (required) - set to the seller/store city id for cost calculation
+        'origin_city_id' => env('RAJAONGKIR_ORIGIN_CITY_ID'),
+        // base URL for RajaOngkir API (pro/sandbox). Default is pro endpoint.
+        'base_url' => env('RAJAONGKIR_BASE_URL', 'https://pro.rajaongkir.com/api'),
+    ],
+
 ];

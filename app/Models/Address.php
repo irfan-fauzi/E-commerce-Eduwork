@@ -11,8 +11,11 @@ class Address extends Model
 
     protected $fillable = [
         'user_id',
+        'recipient_name',
+        'phone',
         'label',
         'address_text',
+        // Use string city/province (RajaOngkir numeric IDs are not stored in this schema)
         'city',
         'province',
         'postal_code',

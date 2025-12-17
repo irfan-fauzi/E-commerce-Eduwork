@@ -310,6 +310,16 @@ POST /user/checkout/pay
 ```
 
 Returns Midtrans Snap payment page with snap_token.
+Note: The application records the Midtrans `payment_type` (e.g., `bank_transfer`, `gopay`, `credit_card`) into the `payment_method` column, and records the Midtrans `transaction_id` into `gateway_reference`.
+
+Note: If Midtrans keys are missing or there is an issue contacting the Midtrans API, the application will log the error and show a friendly message to the user. There is no fallout to production: no simulated tokens or simulated payments are generated. Use proper Midtrans sandbox or production keys in `.env` to test and run payments.
+
+This project now uses Notiflix (loading/notification) for Midtrans popup loading state. To ensure the UI shows a spinner and notifications when the Midtrans popup is auto-opened, install frontend dependencies and build assets:
+
+```bash
+npm install
+npm run dev
+```
 
 ### 5. Midtrans Snap Payment
 

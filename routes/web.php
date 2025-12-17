@@ -15,7 +15,7 @@ Route::get('/', function () {
         return redirect()->route('user.dashboard');
     }
     return redirect()->route('login');
-})->name('home');
+});
 
 // Alias routes untuk backward compatibility
 Route::middleware(['auth'])->group(function () {
@@ -25,6 +25,10 @@ Route::middleware(['auth'])->group(function () {
 
 // User authenticated routes
 Route::middleware(['auth'])->group(function () {
+    // Maintain legacy '/profile' routes for backward compatibility
+    Route::get('/profile', [ProfileController::class, 'edit']);
+    Route::patch('/profile', [ProfileController::class, 'update']);
+    Route::delete('/profile', [ProfileController::class, 'destroy']);
     // Global dashboard route: redirect based on user role (admin -> admin.dashboard, user -> user.dashboard)
     Route::get('/dashboard', function () {
         if (auth('web')->check() && auth('web')->user()->is_admin) {
@@ -51,9 +55,18 @@ Route::middleware(['auth'])->group(function () {
         // Checkout routes
         Route::get('/checkout', [\App\Http\Controllers\User\CheckoutController::class, 'index'])->name('checkout.index');
         Route::post('/checkout/pay', [\App\Http\Controllers\User\CheckoutController::class, 'pay'])->name('checkout.pay');
+        // Simulation route removed for production
+        Route::post('/checkout/notify', [\App\Http\Controllers\User\CheckoutController::class, 'notifyPayment'])->name('checkout.notify');
 
         // Transactions routes (view user's own orders)
         Route::get('/transactions/{transaction}', [\App\Http\Controllers\User\TransactionController::class, 'show'])->name('transactions.show');
+        // Cancel a user's pending transaction
+        Route::post('/transactions/{transaction}/cancel', [\App\Http\Controllers\User\TransactionController::class, 'cancel'])->name('transactions.cancel');
+
+        // Show payment page for an existing transaction (continue payment)
+        Route::get('/checkout/payment/{transaction}', [\App\Http\Controllers\User\CheckoutController::class, 'showPayment'])->name('checkout.payment.show');
+        // Switch existing transaction to Midtrans payment (create midtrans payment attempt)
+        Route::post('/checkout/payment/switch/{transaction}', [\App\Http\Controllers\User\CheckoutController::class, 'switchToMidtrans'])->name('checkout.payment.switch');
 
         // Profile routes for user (moved here so path becomes /user/profile)
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -87,6 +100,10 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
 Route::post('/webhook/midtrans', [\App\Http\Controllers\WebhookController::class, 'midtrans'])
     ->name('webhook.midtrans')
     ->withoutMiddleware('csrf');
+
+// Midtrans return URL used by client-side redirect after payment completion
+Route::get('/checkout/return', [\App\Http\Controllers\WebhookController::class, 'midtransReturn'])
+    ->name('webhook.midtrans.return');
 
 // Auth routes
 require __DIR__ . '/auth.php';

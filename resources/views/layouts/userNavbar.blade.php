@@ -11,79 +11,74 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-        <!-- Scripts -->
+        <!-- Scripts & Styles (Vite) -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen flex flex-col bg-gray-100">
-            <!-- Navigation -->
-            <nav class="bg-white border-b border-gray-200">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center">
 
-                    <!-- LEFT: BRAND -->
-                    <div class="flex-1">
-                        <a href="{{ route('user.dashboard') }}" class="text-2xl font-bold tracking-tight">
-                            🛍️ EduWork Shop
+    </head>
+    <body class="font-sans antialiased overflow-x-hidden">
+
+        <div class="min-h-screen flex flex-col bg-gray-100 overflow-x-hidden">
+
+            <!-- Navigation -->
+            <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+
+                    <div class="flex items-center flex-shrink-0">
+                        <a href="{{ route('user.dashboard') }}" class="flex items-center ">
+                            <x-site-logo class="mr-2" />
+                            <span class="sr-only">{{ config('app.name', 'Logo') }}</span>
                         </a>
                     </div>
 
-                    <!-- CENTER: MENU -->
+                    <!-- MENU  -->
                     <div class="hidden md:flex gap-10 text-sm items-center">
                         <a href="{{ route('user.dashboard') }}"
-                        class="{{ request()->routeIs('user.dashboard') ? 'underline font-medium text-black' : 'text-gray-600 hover:text-black' }}">
+                           class="pb-1 {{ request()->routeIs('user.dashboard') ? 'border-b-2 border-black text-black font-medium' : 'text-gray-600 hover:text-black' }}">
                             Home
                         </a>
 
-                        <!-- SHOP  -->
                         <a href="{{ route('user.products.index') }}"
-                        class="{{ request()->routeIs('user.products.*') ? 'underline font-medium text-black' : 'text-gray-600 hover:text-black' }}">
-                            Shop
+                           class="pb-1 {{ request()->routeIs('user.products.*') ? 'border-b-2 border-black text-black font-medium' : 'text-gray-600 hover:text-black' }}">
+                            Product
                         </a>
 
-                        <a href="#" class="text-gray-600 hover:text-black">Contact</a>
-                        <a href="#" class="text-gray-600 hover:text-black">About</a>
+                        <a href="#" class="text-gray-600 hover:text-black pb-1">About</a>
 
-                        @guest
-                            <a href="{{ route('register') }}" class="text-gray-600 hover:text-black">Sign Up</a>
-                        @endguest
+                        <a href="#" class="text-gray-600 hover:text-black pb-1">Contact</a>
+                    </div>
+                    <div class="flex items-center gap-6">
+
+                        <!-- SEARCH (desktop only) -->
+                    <div class="hidden md:flex items-center bg-gray-100 rounded-md px-3 py-2 w-40 lg:w-64">
+                    <form method="GET" action="{{ route('user.products.index') }}" class="flex items-center w-full">
+
+                    <input
+                    type="text"
+                    name="search"
+                    value="{{ request('search') }}"
+                    placeholder="What are you looking for?"
+                    class="w-full bg-transparent text-sm outline-none border-0 focus:ring-0"
+                    >
+
+                    <button
+                    type="submit"
+                    class="ml-2 p-0 bg-transparent border-0"
+                    aria-label="Search"
+                    >
+                    <i class="bi bi-search text-gray-700 text-base"></i>
+                    </button>
+
+                    </form>
                     </div>
 
-                    <!-- RIGHT: SEARCH + ICONS -->
-                    <div class="flex-1 flex justify-end items-center gap-6 ml-10">
-
-                        <!-- SEARCH BAR -->
-                        <div class="hidden md:flex items-center bg-gray-100 rounded-md pl-4 pr-3 py-2 w-64">
-                            <form method="GET" action="{{ route('user.products.index') }}" class="flex items-center w-full">
-                                <input
-                                    type="text"
-                                    name="search"
-                                    value="{{ request('search') }}"
-                                    placeholder="What are you looking for?"
-                                    class="bg-gray-100 w-full text-sm outline-none"
-                                >
-                                <button type="submit" class="ml-2">
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M21 21l-4.35-4.35M16 10a6 6 0 11-12 0 6 6 0 0112 0z" />
-                                    </svg>
-                                </button>
-                            </form>
-                        </div>
-
-                        <!-- HEART ICON -->
-                        <button aria-label="Wishlist">
-                            <svg class="w-6 h-6 text-black" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 21.364l-7.682-7.682a4.5 4.5 0 010-6.364z"/>
-                            </svg>
+                        <!-- HEART -->
+                        <button aria-label="Wishlist" class="flex items-center">
+                            <i class="bi bi-heart" style="font-size:1.25rem;"></i>
                         </button>
 
-                        <!-- CART ICON -->
+                        <!-- CART -->
                         <a href="{{ route('user.cart.index') }}" class="relative" aria-label="Cart">
-                            <svg class="w-6 h-6 text-black" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9M17 13l2 9M6 22a1 1 0 100-2 1 1 0 000 2zm12 0a1 1 0 100-2 1 1 0 000 2z"/>
-                            </svg>
+                            <i class="bi bi-cart" style="font-size:1.25rem;"></i>
 
                             @auth
                             <span id="cart-badge"
@@ -93,52 +88,68 @@
                             @endauth
                         </a>
 
-                        <!-- AUTH DROPDOWN / LOGIN LINKS -->
+                        <!-- USER  -->
                         @auth
-                            <x-dropdown align="right" width="48">
-                                <x-slot name="trigger">
-                                    <button class="inline-flex items-center px-3 py-2 text-sm text-gray-700">
-                                        <div>{{ auth()->user()->name }}</div>
-                                        <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd"
-                                                d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.25a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                    </button>
-                                </x-slot>
+                        <div id="userTrigger" class="flex items-center gap-2 ml-2 cursor-pointer select-none">
+                            <i class="bi bi-person-circle" style="font-size:1.4rem;"></i>
+                            <span class="text-sm font-medium text-gray-800 hidden md:inline-block">{{ auth()->user()->name }}</span>
+                        </div>
+                        @endauth
 
-                                <x-slot name="content">
-                                    <!-- keep admin/user profile logic -->
-                                    @if(auth()->user() && auth()->user()->is_admin)
-                                        <x-dropdown-link :href="route('admin.profile.edit')">Profile</x-dropdown-link>
-                                    @else
-                                        <x-dropdown-link :href="route('user.profile.edit')">Profile</x-dropdown-link>
-                                    @endif
-
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
-                                        <x-dropdown-link
-                                            :href="route('logout')"
-                                            onclick="event.preventDefault(); this.closest('form').submit();"
-                                        >Log Out</x-dropdown-link>
-                                    </form>
-                                </x-slot>
-                            </x-dropdown>
-                        @else
+                        @guest
                             <div class="hidden md:flex items-center gap-4">
                                 <a href="{{ route('login') }}" class="text-sm text-gray-700 hover:text-gray-900">Log in</a>
                                 @if (Route::has('register'))
                                     <a href="{{ route('register') }}" class="text-sm text-blue-600 hover:text-blue-800 font-medium">Register</a>
                                 @endif
                             </div>
-                        @endauth
+                        @endguest
+
+                        <!-- HAMBURGER -->
+                        <button id="mobileMenuBtn" class="ml-2 md:hidden focus:outline-none" aria-label="Open menu">
+                            <i class="bi bi-list" style="font-size:1.6rem;"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- USER DROPDOWN (DESKTOP)  -->
+                <div id="userDropdown" class="hidden absolute right-4 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+                    <div class="py-1">
+                        @if(auth()->user() && auth()->user()->is_admin)
+                            <a href="{{ route('admin.profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+                        @else
+                            <a href="{{ route('user.profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+                        @endif
+
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Log Out</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- MOBILE MENU COLLAPSE -->
+                <div id="mobileMenu" class="md:hidden hidden px-6 pb-4 mt-2 border-t border-gray-100 bg-white">
+                    <div class="flex flex-col gap-3 text-sm pt-4">
+                        <a href="{{ route('user.dashboard') }}"
+                           class="{{ request()->routeIs('user.dashboard') ? 'text-black font-medium underline' : 'text-gray-700' }}">
+                            Home
+                        </a>
+
+                        <a href="{{ route('user.products.index') }}"
+                           class="{{ request()->routeIs('user.products.*') ? 'text-black font-medium underline' : 'text-gray-700' }}">
+                            Product
+                        </a>
+
+                        <a href="#" class="text-gray-700">About</a>
+                        <a href="#" class="text-gray-700">Contact</a>
                     </div>
                 </div>
             </nav>
 
 
-            <!-- Flash Messages -->
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-2">
+            <!-- Flash Messages (full width) -->
+            <div class="w-full py-2">
                 <x-flash-messages />
             </div>
 
@@ -148,22 +159,55 @@
                 @include('layouts.footer')
             </main>
         </div>
+
+        <!-- SCRIPTS -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Mobile menu toggle
+                const mobileBtn = document.getElementById('mobileMenuBtn');
+                const mobileMenu = document.getElementById('mobileMenu');
+                mobileBtn && mobileBtn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    mobileMenu.classList.toggle('hidden');
+                });
+
+
+                const userTrigger = document.getElementById('userTrigger');
+                const userDropdown = document.getElementById('userDropdown');
+                if (userTrigger) {
+                    userTrigger.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        userDropdown.classList.toggle('hidden');
+                    });
+
+                    // Dropdown
+                    document.addEventListener('click', function () {
+                        if (userDropdown && !userDropdown.classList.contains('hidden')) {
+                            userDropdown.classList.add('hidden');
+                        }
+                    });
+                }
+
+
+                if (userDropdown) {
+                    userDropdown.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                    });
+                }
+
+                // Update cart badge count
+                @auth
+                    fetch('{{ route("user.cart.count") }}')
+                        .then(response => response.json())
+                        .then(data => {
+                            const cartBadge = document.getElementById('cart-badge');
+                            if (cartBadge && data && typeof data.count !== 'undefined') {
+                                cartBadge.textContent = data.count;
+                            }
+                        })
+                        .catch(e => console.log('Cart badge error:', e));
+                @endauth
+            });
+        </script>
     </body>
 </html>
-
-<script>
-// Update cart badge count
-document.addEventListener('DOMContentLoaded', function() {
-    @auth
-        fetch('{{ route("user.cart.count") }}')
-            .then(response => response.json())
-            .then(data => {
-                const cartBadge = document.getElementById('cart-badge');
-                if (cartBadge && data && typeof data.count !== 'undefined') {
-                    cartBadge.textContent = data.count;
-                }
-            })
-            .catch(e => console.log('Cart badge error:', e));
-    @endauth
-});
-</script>

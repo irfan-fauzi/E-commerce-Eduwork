@@ -16,6 +16,7 @@ class ProfileUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
+            // --- PROFILE FIELDS ---
             'name' => ['required', 'string', 'max:255'],
             'email' => [
                 'required',
@@ -26,6 +27,11 @@ class ProfileUpdateRequest extends FormRequest
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
             'phone' => ['nullable', 'string', 'max:20'],
+
+            // --- PASSWORD VALIDATION ---
+            'current_password' => ['nullable', 'current_password'],
+            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+            'password_confirmation' => ['nullable', 'string', 'min:8'],
         ];
     }
 }

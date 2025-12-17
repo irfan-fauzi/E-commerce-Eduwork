@@ -39,6 +39,9 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            // Ensure phone is set as the column is non-nullable in the schema
+            'phone' => $request->input('phone', '0000000000'),
+            'is_admin' => false,
         ]);
 
         event(new Registered($user));
