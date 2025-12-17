@@ -80,9 +80,17 @@
                                                 Rp {{ number_format($order->total_amount + $order->shipping_fee, 0, ',', '.') }}
                                             </td>
                                             <td class="px-4 py-3 text-sm">
-                                                <a href="{{ route('user.transactions.show', $order->id) }}" class="text-blue-600 hover:text-blue-800">
-                                                    {{ __('View') }}
-                                                </a>
+                                                <div class="flex items-center gap-3">
+                                                    <a href="{{ route('user.transactions.show', $order->id) }}" class="text-blue-600 hover:text-blue-800">
+                                                        {{ __('View') }}
+                                                    </a>
+                                                    @if($order->status === 'pending')
+                                                        <form method="POST" action="{{ route('user.transactions.cancel', $order->id) }}" onsubmit="return confirm('Cancel this order?');">
+                                                            @csrf
+                                                            <button type="submit" class="text-red-600 hover:text-red-800 text-sm">{{ __('Cancel') }}</button>
+                                                        </form>
+                                                    @endif
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach

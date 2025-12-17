@@ -6,6 +6,7 @@ use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
@@ -34,7 +35,23 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $validated = $request->validated();
+
+
+        if (!empty($validated['password'])) {
+            $validated['password'] = Hash::make($validated['password']);
+        } else {
+
+            unset($validated['password']);
+            unset($validated['password_confirmation']);
+        }
+
+
+        if (empty($validated['password'] ?? null)) {
+            unset($validated['current_password']);
+        }
+
+        $request->user()->fill($validated);
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
@@ -43,13 +60,7 @@ class ProfileController extends Controller
         $request->user()->save();
 
         // Redirect back to admin or user profile edit depending on role
-        if ($request->user()->is_admin) {
-            return Redirect::route('admin.profile.edit')
-                ->with('status', 'profile-updated')
-                ->with('success', 'Profile updated.');
-        }
-
-        return Redirect::route('user.profile.edit')
+        return Redirect::to('/profile')
             ->with('status', 'profile-updated')
             ->with('success', 'Profile updated.');
     }

@@ -91,7 +91,7 @@
                                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Date</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-gray-200">>
+                            <tbody class="divide-y divide-gray-200">
                                 @forelse($recentOrders ?? [] as $order)
                                     <tr class="hover:bg-gray-50 transition">
                                         <td class="px-6 py-3 text-sm font-medium text-gray-900">#{{ $order->id }}</td>

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Payment;
 
 class Transaction extends Model
 {
@@ -15,16 +16,38 @@ class Transaction extends Model
         'status',
         'total_amount',
         'shipping_fee',
-        'payment_method',
-        'payment_gateway_id',
-        'paid_at',
+        'message',
     ];
 
     protected $casts = [
         'total_amount' => 'integer',
         'shipping_fee' => 'integer',
-        'paid_at' => 'datetime',
     ];
+
+    /**
+     * Relationship: Transaction has many payments
+     */
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    /**
+     * Helper to get the latest successful payment (if any)
+     */
+    public function latestSuccessfulPayment()
+    {
+        return $this->hasOne(Payment::class)->where('status', Payment::STATUS_SUCCESS)->latestOfMany('paid_at');
+    }
+
+    /**
+     * Maintain backward compatibility: return paid_at from the latest successful payment
+     */
+    public function getPaidAtAttribute()
+    {
+        $p = $this->payments()->where('status', Payment::STATUS_SUCCESS)->orderByDesc('paid_at')->first();
+        return $p ? $p->paid_at : null;
+    }
 
     public function user()
     {
@@ -43,6 +66,7 @@ class Transaction extends Model
 
     public function getTotalAmountWithShippingAttribute()
     {
-        return $this->total_amount + $this->shipping_fee;
+        // total_amount already includes shipping_fee in this application
+        return $this->total_amount;
     }
 }
