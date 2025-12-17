@@ -3,6 +3,17 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\ProductController;
 use App\Http\Controllers\User\HomeController;
+use App\Http\Controllers\User\WishlistController;
+use App\Http\Controllers\User\DashboardController;
+use App\Http\Controllers\User\CartController;
+use App\Http\Controllers\User\CheckoutController;
+use App\Http\Controllers\User\TransactionController;
+use App\Http\Controllers\User\AddressController;
+use App\Http\Controllers\WebhookController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\TransactionController as AdminTransactionController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -21,7 +32,7 @@ Route::get('/', function () {
 
 // Alias routes untuk backward compatibility
 Route::middleware(['auth'])->group(function () {
-    
+
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
 });
@@ -40,7 +51,7 @@ Route::middleware(['auth'])->group(function () {
         return redirect()->route('user.dashboard');
     })->name('dashboard');
     Route::prefix('user')->name('user.')->group(function () {
-        Route::get('/dashboard', [\App\Http\Controllers\User\DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         //Home route
         Route::get('/home', [HomeController::class, 'index'])->name('home');
@@ -50,29 +61,29 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
 
         // Cart routes
-        Route::resource('cart', \App\Http\Controllers\User\CartController::class)
+        Route::resource('cart', CartController::class)
             ->only(['index', 'store', 'update', 'destroy']);
         // Cart count (AJAX) - returns JSON {count: int}
-        Route::get('cart/count', [\App\Http\Controllers\User\CartController::class, 'count'])->name('cart.count');
+        Route::get('cart/count', [CartController::class, 'count'])->name('cart.count');
 
         // Address routes
-        Route::resource('addresses', \App\Http\Controllers\User\AddressController::class);
+        Route::resource('addresses', AddressController::class);
 
         // Checkout routes
-        Route::get('/checkout', [\App\Http\Controllers\User\CheckoutController::class, 'index'])->name('checkout.index');
-        Route::post('/checkout/pay', [\App\Http\Controllers\User\CheckoutController::class, 'pay'])->name('checkout.pay');
+        Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+        Route::post('/checkout/pay', [CheckoutController::class, 'pay'])->name('checkout.pay');
         // Simulation route removed for production
-        Route::post('/checkout/notify', [\App\Http\Controllers\User\CheckoutController::class, 'notifyPayment'])->name('checkout.notify');
+        Route::post('/checkout/notify', [CheckoutController::class, 'notifyPayment'])->name('checkout.notify');
 
         // Transactions routes (view user's own orders)
-        Route::get('/transactions/{transaction}', [\App\Http\Controllers\User\TransactionController::class, 'show'])->name('transactions.show');
+        Route::get('/transactions/{transaction}', [TransactionController::class, 'show'])->name('transactions.show');
         // Cancel a user's pending transaction
-        Route::post('/transactions/{transaction}/cancel', [\App\Http\Controllers\User\TransactionController::class, 'cancel'])->name('transactions.cancel');
+        Route::post('/transactions/{transaction}/cancel', [TransactionController::class, 'cancel'])->name('transactions.cancel');
 
         // Show payment page for an existing transaction (continue payment)
-        Route::get('/checkout/payment/{transaction}', [\App\Http\Controllers\User\CheckoutController::class, 'showPayment'])->name('checkout.payment.show');
+        Route::get('/checkout/payment/{transaction}', [CheckoutController::class, 'showPayment'])->name('checkout.payment.show');
         // Switch existing transaction to Midtrans payment (create midtrans payment attempt)
-        Route::post('/checkout/payment/switch/{transaction}', [\App\Http\Controllers\User\CheckoutController::class, 'switchToMidtrans'])->name('checkout.payment.switch');
+        Route::post('/checkout/payment/switch/{transaction}', [CheckoutController::class, 'switchToMidtrans'])->name('checkout.payment.switch');
 
         // Profile routes for user (moved here so path becomes /user/profile)
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -87,13 +98,13 @@ Route::middleware(['auth'])->group(function () {
 
 // Admin routes (requires auth and is_admin middleware)
 Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(function () {
-    Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
-    Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::resource('products', AdminProductController::class);
     // Product image management: delete image and set primary
-    Route::delete('products/images/{image}', [\App\Http\Controllers\Admin\ProductController::class, 'destroyImage'])->name('products.images.destroy');
-    Route::post('products/{product}/images/{image}/primary', [\App\Http\Controllers\Admin\ProductController::class, 'setPrimaryImage'])->name('products.images.setPrimary');
-    Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
-    Route::resource('transactions', \App\Http\Controllers\Admin\TransactionController::class)
+    Route::delete('products/images/{image}', [AdminProductController::class, 'destroyImage'])->name('products.images.destroy');
+    Route::post('products/{product}/images/{image}/primary', [AdminProductController::class, 'setPrimaryImage'])->name('products.images.setPrimary');
+    Route::resource('categories', AdminCategoryController::class);
+    Route::resource('transactions', AdminTransactionController::class)
         ->only(['index', 'show', 'update']);
     // Admin profile routes (handled by main ProfileController)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -103,12 +114,12 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
 });
 
 // Webhook route
-Route::post('/webhook/midtrans', [\App\Http\Controllers\WebhookController::class, 'midtrans'])
+Route::post('/webhook/midtrans', [WebhookController::class, 'midtrans'])
     ->name('webhook.midtrans')
     ->withoutMiddleware('csrf');
 
 // Midtrans return URL used by client-side redirect after payment completion
-Route::get('/checkout/return', [\App\Http\Controllers\WebhookController::class, 'midtransReturn'])
+Route::get('/checkout/return', [WebhookController::class, 'midtransReturn'])
     ->name('webhook.midtrans.return');
 
 // Auth routes

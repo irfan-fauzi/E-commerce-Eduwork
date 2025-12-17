@@ -13,7 +13,7 @@
 
         <!-- Scripts & Styles (Vite) -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-        
+
     </head>
     <body class="font-sans antialiased overflow-x-hidden">
 
@@ -32,27 +32,24 @@
 
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <a href="{{ route('user.products.index') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('user.products.*') ? 'border-blue-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} text-sm font-medium leading-5 transition duration-150 ease-in-out">
+                                  @auth
+                                    <a href="{{ route('user.home') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('user.home') ? 'border-gray-900 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} text-sm font-medium leading-5 transition duration-150 ease-in-out">
+                                        {{ __('Home') }}
+                                    </a>
+                                @endauth
+                                <a href="{{ route('user.products.index') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('user.products.*') ? 'border-gray-900 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} text-sm font-medium leading-5 transition duration-150 ease-in-out">
                                     {{ __('Shop') }}
                                 </a>
-                                @auth
-                                    <a href="{{ route('user.cart.index') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('user.cart.*') ? 'border-blue-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} text-sm font-medium leading-5 transition duration-150 ease-in-out">
-                                        {{ __('Cart') }} <span class="ml-1 bg-red-500 text-white text-xs px-2 py-1 rounded-full" id="cart-badge">{{ auth()->user()->cartItems()->count() }}</span>
-                                    </a>
-                                    <a href="{{ route('user.home') }}" class="inline-flex items-center px-1 pt-1 border-b-2">Home</a>
-                                @endauth
+
+                                <a href="{{ url('/about') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->is('about') ? 'border-gray-900 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} text-sm font-medium leading-5 transition duration-150 ease-in-out">
+                                    {{ __('About') }}
+                                </a>
+
+                                <a href="{{ url('/contact') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->is('contact') ? 'border-gray-900 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} text-sm font-medium leading-5 transition duration-150 ease-in-out">
+                                    {{ __('Contact') }}
+                                </a>
+
                             </div>
-                        </div>
-
-                        <a href="{{ route('user.products.index') }}"
-                           class="pb-1 {{ request()->routeIs('user.products.*') ? 'border-b-2 border-black text-black font-medium' : 'text-gray-600 hover:text-black' }}">
-                            Product
-                        </a>
-
-                        <a href="#" class="text-gray-600 hover:text-black pb-1">About</a>
-
-                        <a href="#" class="text-gray-600 hover:text-black pb-1">Contact</a>
-                    </div>
                     <div class="flex items-center gap-6">
 
                         <!-- SEARCH (desktop only) -->
@@ -128,6 +125,8 @@
                             <a href="{{ route('user.profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
                         @endif
 
+                        <a href="{{ route('user.addresses.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Addresses</a>
+
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Log Out</button>
@@ -138,8 +137,8 @@
                 <!-- MOBILE MENU COLLAPSE -->
                 <div id="mobileMenu" class="md:hidden hidden px-6 pb-4 mt-2 border-t border-gray-100 bg-white">
                     <div class="flex flex-col gap-3 text-sm pt-4">
-                        <a href="{{ route('user.dashboard') }}"
-                           class="{{ request()->routeIs('user.dashboard') ? 'text-black font-medium underline' : 'text-gray-700' }}">
+                        <a href="{{ route('user.home') }}"
+                           class="{{ request()->routeIs('user.home') ? 'text-black font-medium underline' : 'text-gray-700' }}">
                             Home
                         </a>
 
@@ -148,8 +147,8 @@
                             Product
                         </a>
 
-                        <a href="#" class="text-gray-700">About</a>
-                        <a href="#" class="text-gray-700">Contact</a>
+                        <a href="{{ url('/about') }}" class="{{ request()->is('about') ? 'text-black font-medium underline' : 'text-gray-700' }}">About</a>
+                        <a href="{{ url('/contact') }}" class="{{ request()->is('contact') ? 'text-black font-medium underline' : 'text-gray-700' }}">Contact</a>
                     </div>
                 </div>
             </nav>
