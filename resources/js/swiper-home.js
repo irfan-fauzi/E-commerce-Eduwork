@@ -1,7 +1,7 @@
 new Swiper('.hero-swiper', {
   loop: true,
   autoplay: {
-    delay: 10500,
+    delay: 15000,
   },
   pagination: {
     el: '.swiper-pagination',
