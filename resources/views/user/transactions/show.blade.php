@@ -145,7 +145,7 @@
                 </div>
                 <div class="flex items-center mt-6">
                     <!-- Back button  -->
-                    <a href="{{ route('user.dashboard') }}" class="inline-flex items-center justify-center w-12 h-10 bg-red-600 hover:bg-red-700 text-white rounded">
+                    <a href="{{ route('user.home') }}" class="inline-flex items-center justify-center w-12 h-10 bg-red-600 hover:bg-red-700 text-white rounded">
                         <i class="bi bi-arrow-left text-2xl" aria-hidden="true"></i>
                     </a>
 
