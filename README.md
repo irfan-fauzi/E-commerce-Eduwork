@@ -238,7 +238,7 @@ routes/
 
 ### User Routes (requires auth)
 
--   `GET /user/dashboard` - User dashboard
+-   `GET /user/home` - User home
 -   `GET /user/cart` - View cart
 -   `POST /user/cart` - Add to cart
 -   `PATCH /user/cart/{id}` - Update cart item
