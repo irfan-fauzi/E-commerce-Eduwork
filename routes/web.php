@@ -1,20 +1,20 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\User\ProductController;
-use App\Http\Controllers\User\HomeController;
-use App\Http\Controllers\User\WishlistController;
-use App\Http\Controllers\User\DashboardController;
-use App\Http\Controllers\User\CartController;
-use App\Http\Controllers\User\CheckoutController;
-use App\Http\Controllers\User\TransactionController;
-use App\Http\Controllers\User\AddressController;
-use App\Http\Controllers\WebhookController;
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
-use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\TransactionController as AdminTransactionController;
-
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\User\AddressController;
+use App\Http\Controllers\User\CartController;
+use App\Http\Controllers\User\CategoryController;
+use App\Http\Controllers\User\CheckoutController;
+use App\Http\Controllers\User\DashboardController;
+use App\Http\Controllers\User\HomeController;
+use App\Http\Controllers\User\ProductController;
+use App\Http\Controllers\User\TransactionController;
+use App\Http\Controllers\User\WishlistController;
+use App\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
@@ -24,11 +24,12 @@ Route::get('/', function () {
         if (auth('web')->user()->is_admin) {
             return redirect()->route('admin.dashboard');
         }
+
         return redirect()->route('user.dashboard');
     }
+
     return redirect()->route('login');
 });
-
 
 // Alias routes untuk backward compatibility
 Route::middleware(['auth'])->group(function () {
@@ -48,17 +49,21 @@ Route::middleware(['auth'])->group(function () {
         if (auth('web')->check() && auth('web')->user()->is_admin) {
             return redirect()->route('admin.dashboard');
         }
+
         return redirect()->route('user.dashboard');
     })->name('dashboard');
     Route::prefix('user')->name('user.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-        //Home route
+        // Home route
         Route::get('/home', [HomeController::class, 'index'])->name('home');
 
         // Products routes
         Route::get('/products', [ProductController::class, 'index'])->name('products.index');
         Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
+
+        // Category routes
+        Route::get('/category/{category:slug}', [CategoryController::class, 'show'])->name('products.category');
 
         // Cart routes
         Route::resource('cart', CartController::class)
@@ -123,4 +128,4 @@ Route::get('/checkout/return', [WebhookController::class, 'midtransReturn'])
     ->name('webhook.midtrans.return');
 
 // Auth routes
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

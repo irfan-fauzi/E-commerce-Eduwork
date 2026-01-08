@@ -1,3 +1,5 @@
+
+
 @extends('layouts.userNavbar')
 
 @section('content')
@@ -9,7 +11,10 @@
                 <ul class="space-y-3 text-sm">
 
                     @foreach ($categories as $category)
-                        <li class="text-gray-600"><a href="">{{ $category->name }}</a></li>
+                  
+                        <li class="text-gray-600">
+                            <a href="{{ route('user.products.category', $category->slug) }}">{{ $category->name }}</a>
+                        </li>
                     @endforeach
                 </ul>
             </aside>
