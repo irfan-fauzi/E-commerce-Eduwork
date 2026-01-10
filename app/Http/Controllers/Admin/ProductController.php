@@ -31,6 +31,19 @@ class ProductController extends Controller
             $query->where('name', 'like', '%' . request('search') . '%');
         }
 
+        if (request('filter')) {
+            $filter = request('filter');
+            if ($filter === 'instock') {
+                $query->where('stock', '>', 0);
+            } elseif ($filter === 'outofstock') {
+                $query->where('stock', '<=', 0);
+            } elseif ($filter === 'active') {
+                $query->where('active', true);
+            } elseif ($filter === 'inactive') {
+                $query->where('active', false);
+            }
+        }
+
         $products = $query->paginate(15)->withQueryString();
         return view('admin.products.index', compact('products'));
     }
