@@ -21,4 +21,9 @@ class HomeController extends Controller
         return view('user.contact.index');
     }
 
+    public function about()
+    {
+        return view('user.about.index');
+    }
+
 }
